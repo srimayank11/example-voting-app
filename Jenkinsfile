@@ -19,6 +19,7 @@ pipeline{
     stages{
         stage("First Stage"){
             steps{
+                sh 'cd vote && docker build -t 297931203145.dkr.ecr.us-east-1.amazonaws.com/demo2-n:${BUILD_NUMBER} .'
                 sh "echo Helloooo"
                 sh "sleep 10"
             }
