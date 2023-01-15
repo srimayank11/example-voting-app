@@ -26,7 +26,15 @@ pipeline{
     }
     stage('Deploy in ECS') {
       steps { 
-        sh 'echo mayank'
+        script {
+          sh'''
+ECR_IMAGE="297931203145.dkr.ecr.us-east-1.amazonaws.com/vote:${BUILD_NUMBER}"
+TASK_DEFINITION=$(aws ecs describe-task-definition --task-definition vote-fargate --region us-east-1)
+NEW_TASK_DEFINTIION=$(echo $TASK_DEFINITION | jq --arg IMAGE "$ECR_IMAGE" '.taskDefinition | .containerDefinitions[0].image = $IMAGE | del(.taskDefinitionArn) | del(.revision) | del(.status) | del(.requiresAttributes) | del(.compatibilities) | del(.registeredAt) | del(.registeredBy)')
+NEW_TASK_INFO=$(aws ecs register-task-definition --region us-east-1 --cli-input-json "$NEW_TASK_DEFINTIION")
+NEW_REVISION=$(echo $NEW_TASK_INFO | jq '.taskDefinition.revision')
+aws ecs update-service --cluster Jenkins-worker --service ${SERVICE_NAME} --task-definition vote-fargate:${NEW_REVISION} --region us-east-1'''
+        }
       }
     }
     stage('Adding test') {
@@ -35,12 +43,7 @@ pipeline{
       }
     }
   }
-  environment {
-    AWS_DEFAULT_REGION = 'us-east-1'
-    SERVICE_NAME = 'vote'
-    TASK_FAMILY = 'vote-fargate'
-    CLUSTER = 'Jenkins-worker'
-  }
+  
   post{
         always{
             echo "I will run ALWAYS"
