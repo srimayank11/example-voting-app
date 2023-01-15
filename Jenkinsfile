@@ -20,7 +20,7 @@ pipeline{
         stage("First Stage"){
             steps{
                 cd vote
-                aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 297931203145.dkr.ecr.us-east-1.amazonaws.com                 
+                aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 297931203145.dkr.ecr.us-east-1.amazonaws.com
             }
         }
         stage("Second Stage"){
