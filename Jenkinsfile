@@ -25,8 +25,8 @@ pipeline{
       }
     }
     stage('Deploy in ECS') {
-      steps {        
-
+      steps { 
+        sh 'echo mayank'
       }
     }
     stage('Adding test') {
