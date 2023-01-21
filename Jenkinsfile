@@ -2,6 +2,17 @@ pipeline{
   agent {
     label 'worker'
   }
+  
+   options{
+        buildDiscarder(logRotator(daysToKeepStr: '15'))
+        disableConcurrentBuilds()
+        timeout(time: 30, unit: 'MINUTES')
+        retry(3)
+    }
+  parameters{
+        string(name: 'BRANCH', defaultValue: 'main')
+        booleanParam(name: 'UnitTestCases', defaultValue: false)
+    }
 
   stages {
     stage('Build Docker Image') {
