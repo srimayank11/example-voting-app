@@ -2,16 +2,7 @@ pipeline{
   agent {
     label 'worker'
   }
-  options{
-        buildDiscarder(logRotator(daysToKeepStr: '15'))
-        disableConcurrentBuilds()
-        timeout(time: 30, unit: 'MINUTES')
-        retry(3)
-    }
-  parameters{
-        string(name: 'BRANCH', defaultValue: 'main')
-        booleanParam(name: 'UnitTestCases', defaultValue: false)
-    }
+
   stages {
     stage('Build Docker Image') {
       parallel {
@@ -36,20 +27,5 @@ NEW_REVISION=$(echo $NEW_TASK_INFO | jq '.taskDefinition.revision')
 aws ecs update-service --cluster Jenkins-worker --service vote --task-definition vote-fargate:${NEW_REVISION} --region us-east-1'''
         }
       }
-    }
-    stage('Adding test') {
-      steps {
-        sh 'echo separator'
-      }
-    }
-  }
-  
-  post{
-        always{
-            echo "I will run ALWAYS"
-        }
-        failure{
-            echo "Only incase of FAILURES"
-        }
     }
 }
