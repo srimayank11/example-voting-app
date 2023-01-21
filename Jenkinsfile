@@ -29,3 +29,4 @@ aws ecs update-service --cluster Jenkins-worker --service vote --task-definition
       }
     }
 }
+}
