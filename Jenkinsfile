@@ -40,4 +40,12 @@ aws ecs update-service --cluster Jenkins-worker --service vote --task-definition
       }
     }
 }
+  post{
+        always{
+            echo "I will run ALWAYS"
+        }
+        failure{
+            echo "Only incase of FAILURES"
+        }
+    }
 }
